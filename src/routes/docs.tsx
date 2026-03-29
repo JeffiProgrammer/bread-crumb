@@ -2,43 +2,25 @@ import { Link, createFileRoute } from '@tanstack/react-router'
 import BreadcrumbPlaceholder from '../components/BreadcrumbPlaceholder'
 import { docsCatalog } from '../content.docsCatalog'
 
-export const Route = createFileRoute('/')({
-  component: PortalRoute,
+export const Route = createFileRoute('/docs')({
+  component: DocsIndexRoute,
 })
 
-function PortalRoute() {
+function DocsIndexRoute() {
   return (
     <div className="page-frame">
       <section className="hero-panel slide-up">
-        <p className="hero-kicker">Starter Removed</p>
-        <h1 className="hero-title">Build Breadcrumbs On A Real Route Maze</h1>
+        <p className="hero-kicker">Level 1</p>
+        <h1 className="hero-title">Documentation Base Route</h1>
         <p className="hero-copy">
-          This portal is now a dedicated playground with deep static and dynamic
-          route combinations so breadcrumb behavior can be implemented and
-          validated in realistic navigation flows.
+          This route is your static anchor. From here, navigation branches into
+          dynamic section, topic, and article segments.
         </p>
-
-        <div className="cta-row">
-          <Link to="/docs" className="button-link">
-            Enter Docs Base
-          </Link>
-          <Link
-            to="/docs/$sectionSlug/$topicSlug/$articleSlug"
-            params={{
-              sectionSlug: 'guides',
-              topicSlug: 'routing',
-              articleSlug: 'file-based-routing',
-            }}
-            className="button-link alt"
-          >
-            Jump To Deep Article
-          </Link>
-        </div>
       </section>
 
       <BreadcrumbPlaceholder
-        hint="Mount your breadcrumb component here for top-level portal routes."
-        segments={['portal', 'docs']}
+        hint="Breadcrumb component target for /docs."
+        segments={['docs']}
       />
 
       <section className="card-grid">
@@ -53,19 +35,11 @@ function PortalRoute() {
             <article
               key={sectionSlug}
               className="card slide-up"
-              style={{ animationDelay: `${index * 80 + 120}ms` }}
+              style={{ animationDelay: `${index * 80 + 130}ms` }}
             >
-              <p className="card-meta">Section</p>
+              <p className="card-meta">Dynamic sectionSlug</p>
               <h2 className="card-title">{section.title}</h2>
               <p className="card-copy">{section.description}</p>
-
-              <div className="inline-tags">
-                {topicEntries.map(([, topic]) => (
-                  <span key={topic.title} className="tag">
-                    {topic.title}
-                  </span>
-                ))}
-              </div>
 
               <div className="card-actions">
                 <Link
@@ -73,7 +47,7 @@ function PortalRoute() {
                   params={{ sectionSlug }}
                   className="button-link"
                 >
-                  Open Section
+                  Open /{sectionSlug}
                 </Link>
                 <Link
                   to="/docs/$sectionSlug/$topicSlug/$articleSlug"
@@ -84,7 +58,7 @@ function PortalRoute() {
                   }}
                   className="button-link alt"
                 >
-                  Test Deep Path
+                  Deep Link
                 </Link>
               </div>
             </article>

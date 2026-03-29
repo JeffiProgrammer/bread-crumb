@@ -9,12 +9,15 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
-import { Route as AboutRouteImport } from './routes/about'
+import { Route as DocsRouteImport } from './routes/docs'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as DocsSectionSlugRouteImport } from './routes/docs.$sectionSlug'
+import { Route as DocsSectionSlugTopicSlugRouteImport } from './routes/docs.$sectionSlug.$topicSlug'
+import { Route as DocsSectionSlugTopicSlugArticleSlugRouteImport } from './routes/docs.$sectionSlug.$topicSlug.$articleSlug'
 
-const AboutRoute = AboutRouteImport.update({
-  id: '/about',
-  path: '/about',
+const DocsRoute = DocsRouteImport.update({
+  id: '/docs',
+  path: '/docs',
   getParentRoute: () => rootRouteImport,
 } as any)
 const IndexRoute = IndexRouteImport.update({
@@ -22,40 +25,82 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const DocsSectionSlugRoute = DocsSectionSlugRouteImport.update({
+  id: '/$sectionSlug',
+  path: '/$sectionSlug',
+  getParentRoute: () => DocsRoute,
+} as any)
+const DocsSectionSlugTopicSlugRoute =
+  DocsSectionSlugTopicSlugRouteImport.update({
+    id: '/$topicSlug',
+    path: '/$topicSlug',
+    getParentRoute: () => DocsSectionSlugRoute,
+  } as any)
+const DocsSectionSlugTopicSlugArticleSlugRoute =
+  DocsSectionSlugTopicSlugArticleSlugRouteImport.update({
+    id: '/$articleSlug',
+    path: '/$articleSlug',
+    getParentRoute: () => DocsSectionSlugTopicSlugRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
-  '/about': typeof AboutRoute
+  '/docs': typeof DocsRouteWithChildren
+  '/docs/$sectionSlug': typeof DocsSectionSlugRouteWithChildren
+  '/docs/$sectionSlug/$topicSlug': typeof DocsSectionSlugTopicSlugRouteWithChildren
+  '/docs/$sectionSlug/$topicSlug/$articleSlug': typeof DocsSectionSlugTopicSlugArticleSlugRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
-  '/about': typeof AboutRoute
+  '/docs': typeof DocsRouteWithChildren
+  '/docs/$sectionSlug': typeof DocsSectionSlugRouteWithChildren
+  '/docs/$sectionSlug/$topicSlug': typeof DocsSectionSlugTopicSlugRouteWithChildren
+  '/docs/$sectionSlug/$topicSlug/$articleSlug': typeof DocsSectionSlugTopicSlugArticleSlugRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
-  '/about': typeof AboutRoute
+  '/docs': typeof DocsRouteWithChildren
+  '/docs/$sectionSlug': typeof DocsSectionSlugRouteWithChildren
+  '/docs/$sectionSlug/$topicSlug': typeof DocsSectionSlugTopicSlugRouteWithChildren
+  '/docs/$sectionSlug/$topicSlug/$articleSlug': typeof DocsSectionSlugTopicSlugArticleSlugRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/about'
+  fullPaths:
+    | '/'
+    | '/docs'
+    | '/docs/$sectionSlug'
+    | '/docs/$sectionSlug/$topicSlug'
+    | '/docs/$sectionSlug/$topicSlug/$articleSlug'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/about'
-  id: '__root__' | '/' | '/about'
+  to:
+    | '/'
+    | '/docs'
+    | '/docs/$sectionSlug'
+    | '/docs/$sectionSlug/$topicSlug'
+    | '/docs/$sectionSlug/$topicSlug/$articleSlug'
+  id:
+    | '__root__'
+    | '/'
+    | '/docs'
+    | '/docs/$sectionSlug'
+    | '/docs/$sectionSlug/$topicSlug'
+    | '/docs/$sectionSlug/$topicSlug/$articleSlug'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
-  AboutRoute: typeof AboutRoute
+  DocsRoute: typeof DocsRouteWithChildren
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/about': {
-      id: '/about'
-      path: '/about'
-      fullPath: '/about'
-      preLoaderRoute: typeof AboutRouteImport
+    '/docs': {
+      id: '/docs'
+      path: '/docs'
+      fullPath: '/docs'
+      preLoaderRoute: typeof DocsRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/': {
@@ -65,12 +110,70 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/docs/$sectionSlug': {
+      id: '/docs/$sectionSlug'
+      path: '/$sectionSlug'
+      fullPath: '/docs/$sectionSlug'
+      preLoaderRoute: typeof DocsSectionSlugRouteImport
+      parentRoute: typeof DocsRoute
+    }
+    '/docs/$sectionSlug/$topicSlug': {
+      id: '/docs/$sectionSlug/$topicSlug'
+      path: '/$topicSlug'
+      fullPath: '/docs/$sectionSlug/$topicSlug'
+      preLoaderRoute: typeof DocsSectionSlugTopicSlugRouteImport
+      parentRoute: typeof DocsSectionSlugRoute
+    }
+    '/docs/$sectionSlug/$topicSlug/$articleSlug': {
+      id: '/docs/$sectionSlug/$topicSlug/$articleSlug'
+      path: '/$articleSlug'
+      fullPath: '/docs/$sectionSlug/$topicSlug/$articleSlug'
+      preLoaderRoute: typeof DocsSectionSlugTopicSlugArticleSlugRouteImport
+      parentRoute: typeof DocsSectionSlugTopicSlugRoute
+    }
   }
 }
 
+interface DocsSectionSlugTopicSlugRouteChildren {
+  DocsSectionSlugTopicSlugArticleSlugRoute: typeof DocsSectionSlugTopicSlugArticleSlugRoute
+}
+
+const DocsSectionSlugTopicSlugRouteChildren: DocsSectionSlugTopicSlugRouteChildren =
+  {
+    DocsSectionSlugTopicSlugArticleSlugRoute:
+      DocsSectionSlugTopicSlugArticleSlugRoute,
+  }
+
+const DocsSectionSlugTopicSlugRouteWithChildren =
+  DocsSectionSlugTopicSlugRoute._addFileChildren(
+    DocsSectionSlugTopicSlugRouteChildren,
+  )
+
+interface DocsSectionSlugRouteChildren {
+  DocsSectionSlugTopicSlugRoute: typeof DocsSectionSlugTopicSlugRouteWithChildren
+}
+
+const DocsSectionSlugRouteChildren: DocsSectionSlugRouteChildren = {
+  DocsSectionSlugTopicSlugRoute: DocsSectionSlugTopicSlugRouteWithChildren,
+}
+
+const DocsSectionSlugRouteWithChildren = DocsSectionSlugRoute._addFileChildren(
+  DocsSectionSlugRouteChildren,
+)
+
+interface DocsRouteChildren {
+  DocsSectionSlugRoute: typeof DocsSectionSlugRouteWithChildren
+}
+
+const DocsRouteChildren: DocsRouteChildren = {
+  DocsSectionSlugRoute: DocsSectionSlugRouteWithChildren,
+}
+
+const DocsRouteWithChildren = DocsRoute._addFileChildren(DocsRouteChildren)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
-  AboutRoute: AboutRoute,
+  DocsRoute: DocsRouteWithChildren,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
