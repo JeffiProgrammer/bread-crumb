@@ -4,6 +4,7 @@ import { TanStackDevtools } from '@tanstack/react-devtools'
 
 import ThemeToggle from '../components/ThemeToggle'
 import '../styles.css'
+import MainCrumb from '#/components/nav/MainCrumb'
 
 export const Route = createRootRoute({
   component: RootComponent,
@@ -49,7 +50,11 @@ function RootComponent() {
           <ThemeToggle />
         </div>
       </header>
-
+      <div className="topbar-inner">
+        <div className="breadcrumb-rail" aria-label="Breadcrumb">
+          <MainCrumb />
+        </div>
+      </div>
       <div className="layout-wrap">
         <aside className="docs-rail" aria-label="Quick navigation">
           <p className="rail-kicker">Quick Jump</p>
